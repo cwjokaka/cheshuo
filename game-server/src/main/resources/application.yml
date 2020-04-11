@@ -1,0 +1,27 @@
+spring:
+  # 国际化配置
+  messages:
+    basename: static/i18n/messages
+    encoding: UTF-8
+## mysql
+#  datasource:
+#    username: root
+#    password: 123456
+#    url: jdbc:mysql://localhost:3306/cheshuo?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+  # 数据库配置
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: cheshuo
+
+#mybatis:
+#  mapper-locations: classpath:mapping/*Mapper.xml
+#  type-aliases-package: com.example.entity
+
+game_server:
+  ip: 127.0.0.1
+  tcp_port: 8400
+  websocket_port: 8500
+

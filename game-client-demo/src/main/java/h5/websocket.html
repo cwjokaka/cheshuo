@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebsocketClient</title>
+</head>
+<body>
+
+    <form onsubmit="return false">
+        <label>module:</label>
+        <input name="module" id="module" type="number" value="0"/><br>
+        <label>cmd:</label>
+        <input name="cmd" id="cmd" type="number" value="0"/><br>
+        <textarea id="message" name="message" style="height: 300px; width: 300px"></textarea>
+        <input type="button" value="发送消息" onclick="doSend()">
+        <textarea id="responseText" style="height: 300px; width: 300px"></textarea>
+        <input type="button" value="清空内容" onclick="document.getElementById('responseText').value=''">
+    </form>
+</body>
+
+<script src="lib/protobuf.min.js"></script>
+<script src="script/config.js"></script>
+<script src="script/protocol.js"></script>
+<script>
+    var socket;
+    var byteBuf = [];
+    var totalLen = 0;
+
+    document.getElementById("message").value = "{\"id\": 2}";
+
+    // 判断当前浏览器是否支持websocket
+    if(window.WebSocket) {
+        socket = new WebSocket("ws://localhost:8500/ws");
+        // websocket默认是字符串传输，这里改为字节流
+        socket.binaryType = "arraybuffer";
+        //相当于channelRead, ev 收到服务器端回送的消息
+        socket.onmessage = function (ev) {
+            console.log('收到服务端消息:');
+            doReceive(ev.data);
+        };
+
+        // 相当于连接开启(感知到连接开启)
+        socket.onopen = function (ev) {
+            var rt = document.getElementById("responseText");
+            rt.value = "连接开启了.."
+        };
+
+        // 相当于连接关闭(感知到连接关闭)
+        socket.onclose = function (ev) {
+            var rt = document.getElementById("responseText");
+            rt.value = rt.value + "\n" + "连接关闭了.."
+        }
+    } else {
+        alert("当前浏览器不支持websocket")
+    }
+
+    /**
+     * 接收指令
+     */
+    function doReceive(buffer) {
+        // 读取一字节到缓冲区中
+        byteBuf = byteBuf.concat(Array.from(new Uint8Array(buffer)));
+        // 前两个字节是协议总长度
+        if (byteBuf.length < 2) {
+            console.log("协议不足2字节");
+            return;
+        }
+        // 获取协议总长度(2byte)
+        var dataview = new DataView(new Uint8Array(byteBuf).buffer);
+        totalLen = dataview.getUint16(0);
+        console.log("获取数据包总长度:" + totalLen);
+        if (byteBuf.length < totalLen) {
+            return;
+        }
+        var module = dataview.getUint16(2);
+        var cmd = dataview.getUint8(4);
+        console.log("module:" + module + ", cmd:" + cmd);
+        var param_body = dataview.buffer.slice(5, totalLen);
+        var bytes = new Uint8Array(param_body);
+        let data = decode(module, cmd, bytes);
+        let rt = document.getElementById("responseText");
+        rt.value = rt.value + "\n" + "服务端返回module:" + module +
+            ", cmd:" + cmd +
+            ", data:" + JSON.stringify(data);
+        byteBuf = [];
+    }
+
+    /**
+     * 发送指令
+     */
+    function doSend() {
+        if(!window.socket) { //先判断socket是否创建好
+            return;
+        }
+        if(socket.readyState !== WebSocket.OPEN) {
+            alert("连接没有开启");
+            return;
+        }
+        // short
+        var module = parseInt(document.getElementById("module").value);
+        // byte
+        var cmd =  parseInt(document.getElementById("cmd").value);
+        // byte[]
+        var message = document.getElementById("message").value;
+        // console.log(module, cmd, message);
+        var payload = JSON.parse(message);
+
+        var msgBuffer = encode(module, cmd, payload);
+        // 字节数组
+        var buffer = new ArrayBuffer(msgBuffer.byteLength + 5);
+        // 视图对象用于操作ArrayBuffer
+        var view = new DataView(buffer);
+        // 加入total_len(short)
+        view.setUint16(0, 5 + msgBuffer.byteLength);
+        // 加入module(short)
+        view.setUint16(2, module);
+        // 加入cmd(byte)
+        view.setUint8(4, cmd);
+        for (var i = 0; i < msgBuffer.byteLength; i++) {
+            view.setUint8(i + 5, msgBuffer[i]);
+        }
+        // send的是ArrayBuffer | DataView
+        socket.send(view);
+
+    }
+
+</script>
+
+</html>

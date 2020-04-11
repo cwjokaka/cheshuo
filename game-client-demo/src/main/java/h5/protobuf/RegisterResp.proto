@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+message RegisterResp {
+    // 返回码
+    int32 code = 1;
+
+}
