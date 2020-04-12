@@ -19,7 +19,7 @@
     <modules>
         <module>game-common</module>
         <module>game-hall</module>
-        <module>game-server</module>
+        <module>game-server-demo</module>
         <module>game-client-demo</module>
         <module>game-framework</module>
         <module>game-mb-generator</module>

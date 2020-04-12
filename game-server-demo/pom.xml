@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>game-server</artifactId>
+    <artifactId>game-server-demo</artifactId>
 
-    <description>游戏服务器</description>
+    <description>游戏服务器demo</description>
 
     <dependencies>
         <dependency>

@@ -3,6 +3,6 @@
 /game-framework/target/
 /game-hall/target/
 /game-mb-generator/target/
-/game-server/target/
+/game-server-demo/target/
 
 .idea
