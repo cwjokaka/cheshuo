@@ -1,19 +1,11 @@
-//package org.lx.cs.server.server.impl;
+//package org.lx.framework.netty.server.tcp;
 //
 //import io.netty.bootstrap.ServerBootstrap;
 //import io.netty.channel.*;
 //import io.netty.channel.nio.NioEventLoopGroup;
 //import io.netty.channel.socket.SocketChannel;
 //import io.netty.channel.socket.nio.NioServerSocketChannel;
-//import io.netty.handler.codec.string.StringDecoder;
-//import io.netty.handler.codec.string.StringEncoder;
-//import io.netty.util.CharsetUtil;
-//import org.lx.cs.server.Router;
-//import org.lx.cs.server.handler.TcpInHandler;
-//import org.lx.cs.server.server.IServer;
-//import org.lx.cs.server.task.CommonThreadPool;
-//import org.lx.framework.netty.codec.MessageDecoder;
-//import org.lx.framework.netty.codec.MessageEncoder;
+//import org.lx.framework.netty.server.IServer;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Value;
@@ -31,9 +23,6 @@
 //    private String ip;
 //    @Value("${game_server.tcp_port}")
 //    private int port;
-//
-//    private final CommonThreadPool commonThreadPool;
-//    private final Router router;
 //
 //    public TcpSocketServer(CommonThreadPool commonThreadPool, Router router) {
 //        this.commonThreadPool = commonThreadPool;
@@ -56,8 +45,9 @@
 //                        @Override
 //                        protected void initChannel(SocketChannel ch) throws Exception {
 //                            ChannelPipeline pipeline = ch.pipeline();
-//                            pipeline.addLast(new MessageDecoder());
-//                            pipeline.addLast(new MessageEncoder());
+////                            pipeline.addLast(new )
+////                            pipeline.addLast(new MessageDecoder());
+////                            pipeline.addLast(new MessageEncoder());
 ////                            pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
 //                            //pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
 //                            // 自定义出入站

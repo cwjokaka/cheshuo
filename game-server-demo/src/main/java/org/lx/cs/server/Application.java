@@ -1,7 +1,6 @@
 package org.lx.cs.server;
 
-import org.lx.framework.netty.server.IServer;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.lx.framework.ServerBootstrap;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,10 +11,10 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(value = {"org.lx.framework", "org.lx.cs.server","org.lx.cs.common"})
 public class Application implements CommandLineRunner {
 
-    private final IServer gameServer;
+    private ServerBootstrap serverBootstrap;
 
-    public Application(@Qualifier("gameServer") IServer gameServer) {
-        this.gameServer = gameServer;
+    public Application(ServerBootstrap serverBootstrap) {
+        this.serverBootstrap = serverBootstrap;
     }
 
     public static void main(String[] args) {
@@ -24,7 +23,7 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        gameServer.start();
+        serverBootstrap.startAll();
     }
 
 }

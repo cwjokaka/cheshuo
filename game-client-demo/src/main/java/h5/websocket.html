@@ -41,13 +41,13 @@
 
         // 相当于连接开启(感知到连接开启)
         socket.onopen = function (ev) {
-            var rt = document.getElementById("responseText");
+            let rt = document.getElementById("responseText");
             rt.value = "连接开启了.."
         };
 
         // 相当于连接关闭(感知到连接关闭)
         socket.onclose = function (ev) {
-            var rt = document.getElementById("responseText");
+            let rt = document.getElementById("responseText");
             rt.value = rt.value + "\n" + "连接关闭了.."
         }
     } else {
@@ -66,17 +66,17 @@
             return;
         }
         // 获取协议总长度(2byte)
-        var dataview = new DataView(new Uint8Array(byteBuf).buffer);
+        let dataview = new DataView(new Uint8Array(byteBuf).buffer);
         totalLen = dataview.getUint16(0);
-        console.log("获取数据包总长度:" + totalLen);
-        if (byteBuf.length < totalLen) {
+        console.log("获取数据包总长度:" + totalLen + 2);
+        if (byteBuf.length < totalLen + 2) {
             return;
         }
-        var module = dataview.getUint16(2);
-        var cmd = dataview.getUint8(4);
+        let module = dataview.getUint16(2);
+        let cmd = dataview.getUint8(4);
         console.log("module:" + module + ", cmd:" + cmd);
-        var param_body = dataview.buffer.slice(5, totalLen);
-        var bytes = new Uint8Array(param_body);
+        let param_body = dataview.buffer.slice(5, totalLen + 2);
+        let bytes = new Uint8Array(param_body);
         let data = decode(module, cmd, bytes);
         let rt = document.getElementById("responseText");
         rt.value = rt.value + "\n" + "服务端返回module:" + module +
@@ -97,26 +97,26 @@
             return;
         }
         // short
-        var module = parseInt(document.getElementById("module").value);
+        let module = parseInt(document.getElementById("module").value);
         // byte
-        var cmd =  parseInt(document.getElementById("cmd").value);
+        let cmd =  parseInt(document.getElementById("cmd").value);
         // byte[]
-        var message = document.getElementById("message").value;
+        let message = document.getElementById("message").value;
         // console.log(module, cmd, message);
-        var payload = JSON.parse(message);
+        let payload = JSON.parse(message);
 
-        var msgBuffer = encode(module, cmd, payload);
+        let msgBuffer = encode(module, cmd, payload);
         // 字节数组
-        var buffer = new ArrayBuffer(msgBuffer.byteLength + 5);
+        let buffer = new ArrayBuffer(msgBuffer.byteLength + 5);
         // 视图对象用于操作ArrayBuffer
-        var view = new DataView(buffer);
+        let view = new DataView(buffer);
         // 加入total_len(short)
-        view.setUint16(0, 5 + msgBuffer.byteLength);
+        view.setUint16(0, 3 + msgBuffer.byteLength);
         // 加入module(short)
         view.setUint16(2, module);
         // 加入cmd(byte)
         view.setUint8(4, cmd);
-        for (var i = 0; i < msgBuffer.byteLength; i++) {
+        for (let i = 0; i < msgBuffer.byteLength; i++) {
             view.setUint8(i + 5, msgBuffer[i]);
         }
         // send的是ArrayBuffer | DataView

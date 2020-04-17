@@ -44,7 +44,8 @@ public class WebSocketOutHandler extends ChannelOutboundHandlerAdapter {
         byte cmd = message.getCmd();
         ByteBuf output = Unpooled.buffer();
         byte[] paramBody = protobufEncoder.encode(message);
-        output.writeShort(2 + 2 + 1 + paramBody.length);
+        // total_len = module(short) + cmd(byte) + paramBody.length
+        output.writeShort(2 + 1 + paramBody.length);
         output.writeShort(module);
         output.writeByte(cmd);
         output.writeBytes(paramBody);
