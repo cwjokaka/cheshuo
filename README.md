@@ -24,7 +24,7 @@
 | game-client-demo  | 实现游戏客户端简单模拟             |
 | game-common       | 项目公共模块                       |
 | game-framework    | 游戏框架实现                       |
-| game-hall         | 游戏大厅(暂时用不上)               |
-| game-mb-generator | Mybatis代码生成模块(暂时用不上)    |
-| game-server-demo  | 基于game-framework实现的简单服务器 |
+| game-hall         | 游戏大厅               |
+| game-mb-generator | Mybatis代码生成模块    |
+| game-server-demo  | 基于game-framework实现的简单服务器demo |
 

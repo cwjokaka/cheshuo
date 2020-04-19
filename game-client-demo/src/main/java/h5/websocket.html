@@ -5,10 +5,13 @@
     <title>WebsocketClient</title>
 </head>
 <body>
-
+    <select onchange="this.options[this.options.selectedIndex].onclick()">
+        <option onclick="switchProtocol('websocket', 8500)">websocket</option>
+        <option onclick="switchProtocol('tcp', 13329)">tcp</option>
+    </select>
     <form onsubmit="return false">
         <label>module:</label>
-        <input name="module" id="module" type="number" value="0"/><br>
+        <input name="module" id="module" type="number" value="100"/><br>
         <label>cmd:</label>
         <input name="cmd" id="cmd" type="number" value="0"/><br>
         <textarea id="message" name="message" style="height: 300px; width: 300px"></textarea>
@@ -26,11 +29,25 @@
     var byteBuf = [];
     var totalLen = 0;
 
-    document.getElementById("message").value = "{\"id\": 2}";
+    // document.getElementById("message").value = "{\"id\": 2}";
+    document.getElementById("message").value = "{\"account\": \"cwjokaka\", \"password\": \"33207a\"}";
 
     // 判断当前浏览器是否支持websocket
     if(window.WebSocket) {
-        socket = new WebSocket("ws://localhost:8500/ws");
+        initWebsocket(8500);
+    } else {
+        alert("当前浏览器不支持websocket")
+    }
+
+    function initWebsocket(port) {
+        // 如果之前有连接，则先关闭
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            appendText("关闭旧连接...")
+            socket.close();
+        }
+        byteBuf = [];
+        totalLen = 0;
+        socket = new WebSocket(`ws://localhost:${port}/ws`);
         // websocket默认是字符串传输，这里改为字节流
         socket.binaryType = "arraybuffer";
         //相当于channelRead, ev 收到服务器端回送的消息
@@ -41,17 +58,18 @@
 
         // 相当于连接开启(感知到连接开启)
         socket.onopen = function (ev) {
-            let rt = document.getElementById("responseText");
-            rt.value = "连接开启了.."
+            appendText("新连接开启了..");
         };
 
         // 相当于连接关闭(感知到连接关闭)
         socket.onclose = function (ev) {
-            let rt = document.getElementById("responseText");
-            rt.value = rt.value + "\n" + "连接关闭了.."
+            appendText("连接关闭了..");
         }
-    } else {
-        alert("当前浏览器不支持websocket")
+    }
+
+    function switchProtocol(type, port) {
+        newText(`切换${type}连接...`);
+        initWebsocket(port);
     }
 
     /**
@@ -122,6 +140,16 @@
         // send的是ArrayBuffer | DataView
         socket.send(view);
 
+    }
+
+    function appendText(text) {
+        let rt = document.getElementById("responseText");
+        rt.value = rt.value + "\n" + text;
+    }
+
+    function newText(text) {
+        let rt = document.getElementById("responseText");
+        rt.value = text;
     }
 
 </script>

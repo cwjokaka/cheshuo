@@ -35,7 +35,7 @@ public class WebSocketInHandler extends SimpleChannelInboundHandler<BinaryWebSoc
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, BinaryWebSocketFrame msg) throws Exception {
-//        LOGGER.info("websock收到消息:{}", msg);
+        LOGGER.info("websock收到消息:{}", msg);
         Message message = decode(msg);
         Session session = SessionUtil.getSessionFromChannel(ctx);
         messageRouter.route(message, session);
