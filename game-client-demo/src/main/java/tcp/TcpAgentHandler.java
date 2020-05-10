@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ChannelHandler.Sharable
 public class TcpAgentHandler extends SimpleChannelInboundHandler<BinaryWebSocketFrame> {
 
+    // 每条channel对应一个TcpClient
     private final Map<Channel, TcpClient> distributes = new ConcurrentHashMap<>();
     private final static TcpAgentHandler INSTANCE = new TcpAgentHandler();
 
@@ -36,7 +37,7 @@ public class TcpAgentHandler extends SimpleChannelInboundHandler<BinaryWebSocket
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         System.out.println("TcpAgent:建立了新连接, 创建TcpClient连接服务器...");
-        TcpClient client = new TcpClient();
+        TcpClient client = new TcpClient(ctx.channel());
         distributes.put(ctx.channel(), client);
         new Thread(() -> {
             try {

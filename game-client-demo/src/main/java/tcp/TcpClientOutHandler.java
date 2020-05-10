@@ -9,7 +9,7 @@ public class TcpClientOutHandler extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         super.write(ctx, msg, promise);
-//        System.out.println();
+        System.out.println("TcpClientOutHandler:写数据给TcpSocketServer..");
 //        ctx.writeAndFlush(msg);
     }
 }
