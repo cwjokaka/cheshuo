@@ -20,22 +20,21 @@ public class WebSocketOutHandler extends ChannelOutboundHandlerAdapter {
 
     private final ProtobufEncoder protobufEncoder;
 
-    private final MessageManager messageManager;
 
-    public WebSocketOutHandler(ProtobufEncoder protobufEncoder, MessageManager messageManager) {
+    public WebSocketOutHandler(ProtobufEncoder protobufEncoder) {
         this.protobufEncoder = protobufEncoder;
-        this.messageManager = messageManager;
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        super.write(ctx, msg, promise);
         if (msg instanceof String) {
             ctx.writeAndFlush(new TextWebSocketFrame((String) msg));
-        } else if (msg instanceof Message) {
+        } else if (msg instanceof ByteBuf){
             // 组成私有协议
-            ByteBuf output = encode((Message) msg);
-            ChannelUtil.writeAndFlush(ctx.channel(), new BinaryWebSocketFrame(output));
+//            ByteBuf output = encode((Message) msg);
+            ChannelUtil.writeAndFlush(ctx, new BinaryWebSocketFrame((ByteBuf)msg));
+        } else {
+            super.write(ctx, msg, promise);
         }
     }
 

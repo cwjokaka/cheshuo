@@ -11,7 +11,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
- *  TCP代理，用于转发
+ *  TCP代理，用于转发由Websocket发来的消息到TCP服务器上
  */
 public class TcpAgent {
 

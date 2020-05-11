@@ -6,8 +6,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import org.lx.framework.netty.handler.ProtobufEncodeHandler;
 import org.lx.framework.netty.handler.TcpInHandler;
-import org.lx.framework.netty.handler.TcpOutHandler;
 import org.lx.framework.netty.server.IServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +28,12 @@ public class TcpSocketServer implements IServer {
     private int port;
 
     private TcpInHandler tcpInHandler;
-    private TcpOutHandler tcpOutHandler;
 
-    public TcpSocketServer(TcpInHandler tcpInHandler, TcpOutHandler tcpOutHandler) {
+    private ProtobufEncodeHandler protobufEncodeHandler;
+
+    public TcpSocketServer(TcpInHandler tcpInHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.tcpInHandler = tcpInHandler;
-        this.tcpOutHandler = tcpOutHandler;
+        this.protobufEncodeHandler = protobufEncodeHandler;
     }
 
     public void start() {
@@ -51,7 +52,7 @@ public class TcpSocketServer implements IServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            // 解决分包粘包, 指定传递最大为65536字节，长度字段为2byte(short), 消费这两个byte直接把Message字节传到下一个Handler
+                            // 解决分包与粘包, 指定传递最大为65536字节，长度字段为2byte(short), 消费这两个byte直接把Message字节传到下一个Handler
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(
                                     65536,
                                     0,
@@ -61,7 +62,7 @@ public class TcpSocketServer implements IServer {
                                     )
                             );
                             pipeline.addLast(tcpInHandler);
-                            pipeline.addLast(tcpOutHandler);
+                            pipeline.addLast(protobufEncodeHandler);
                         }
                     });
             LOGGER.info("绑定ip:{}, port:{}", ip, port);

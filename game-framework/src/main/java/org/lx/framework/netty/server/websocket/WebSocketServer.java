@@ -12,6 +12,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.lx.framework.netty.handler.ProtobufEncodeHandler;
 import org.lx.framework.netty.handler.WebSocketInHandler;
 import org.lx.framework.netty.handler.WebSocketOutHandler;
 import org.lx.framework.netty.server.IServer;
@@ -35,10 +36,12 @@ public class WebSocketServer implements IServer {
 
     private final WebSocketInHandler webSocketInHandler;
     private final WebSocketOutHandler webSocketOutHandler;
+    private final ProtobufEncodeHandler protobufEncodeHandler;
 
-    public WebSocketServer(WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler) {
+    public WebSocketServer(WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.webSocketInHandler = webSocketInHandler;
         this.webSocketOutHandler = webSocketOutHandler;
+        this.protobufEncodeHandler = protobufEncodeHandler;
     }
 
     @Override
@@ -61,8 +64,11 @@ public class WebSocketServer implements IServer {
                             pipeline.addLast("httpObjectAggregator", new HttpObjectAggregator(65536));
                             // WebSocket处理器(自动处理的WebsocketFrame: Ping/Pong/Close)
                             pipeline.addLast("webSocketServerProtocolHandler", new WebSocketServerProtocolHandler("/ws"));
-                            pipeline.addLast("webSocketOutHandler", webSocketOutHandler);
                             pipeline.addLast("webSocketInHandler", webSocketInHandler);
+                            pipeline.addLast("webSocketOutHandler", webSocketOutHandler);
+                            pipeline.addLast("protobufEncodeHandler", protobufEncodeHandler);
+
+
                         }
                     });
             LOGGER.info("绑定ip:{}, port:{}", ip, port);

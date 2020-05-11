@@ -27,4 +27,8 @@ public class ChannelUtil {
         return channel.writeAndFlush(msg);
     }
 
+    public static ChannelFuture writeAndFlush(ChannelHandlerContext ctx, Object msg) {
+        return ctx.writeAndFlush(msg);
+    }
+
 }
