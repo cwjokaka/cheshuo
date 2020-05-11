@@ -1,8 +1,8 @@
 # Project exclude paths
-/game-common/target/
-/game-framework/target/
-/game-hall/target/
-/game-mb-generator/target/
-/game-server-demo/target/
+**/target/
+#/game-framework/target/
+#/game-hall/target/
+#/game-mb-generator/target/
+#/game-server-demo/target/
 
 .idea
