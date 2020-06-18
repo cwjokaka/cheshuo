@@ -11,7 +11,7 @@ import org.lx.framework.message.Message;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * 公共编码器
  */
 @Component
 @ChannelHandler.Sharable

@@ -18,14 +18,8 @@ import java.util.Map;
 @Component
 public class MessageRouter {
 
-    private final CommonThreadPool commonThreadPool;
-
     // 路由表 --- key: module和cmd的组合  value: 方法体
     private final Map<Integer, MethodInfo> messageToMethod = new HashMap<>();
-
-    public MessageRouter(CommonThreadPool commonThreadPool) {
-        this.commonThreadPool = commonThreadPool;
-    }
 
     public void registerMethodInfo(short module, byte cmd, MethodInfo methodInfo) {
         int key = KeyBuilder.buildKey(module, cmd);
@@ -54,7 +48,7 @@ public class MessageRouter {
 
         // params包含 Session + Message实现类
         final Object[] params = constructParams(methodInfo.getMethod().getParameterTypes(), message, session);
-        commonThreadPool.execute(() -> {
+        CommonThreadPool.execute(() -> {
             try {
                 Object resp = methodInfo.getMethod().invoke(methodInfo.getHandler(), params);
                 ChannelUtil.writeAndFlush(session.getChannel(), resp);

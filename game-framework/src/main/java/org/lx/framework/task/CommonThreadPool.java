@@ -2,32 +2,31 @@ package org.lx.framework.task;
 
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 公共线程池
  */
-@Component
 public class CommonThreadPool {
 
-    private ExecutorService pool = new ThreadPoolExecutor(
-            Runtime.getRuntime().availableProcessors(),
-            32,
-            10,
-            TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(48));
+    private static final int SYS_CORE_NUM = Runtime.getRuntime().availableProcessors();
 
-    public void execute(Runnable runnable) {
-        pool.execute(runnable);
+    private static final ExecutorService commonPool;
+
+    static {
+        commonPool = new ThreadPoolExecutor(
+                SYS_CORE_NUM,
+                SYS_CORE_NUM,
+                0,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(8192),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.DiscardPolicy()
+        );
     }
 
-    public void shutdown() {
-        if (!pool.isShutdown()) {
-            pool.shutdown();
-        }
+    public static void execute(Runnable runnable) {
+        commonPool.execute(runnable);
     }
 
 }

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import org.lx.framework.codec.ProtobufDecoder;
 import org.lx.framework.message.Message;
 import org.lx.framework.message.MessageRouter;
@@ -34,6 +35,7 @@ public class TcpInHandler extends ChannelInboundHandlerAdapter {
 //        super.channelRead(ctx, msg);
         LOGGER.info("TcpInHandler收到消息:" + msg);
         Message message = decode((ByteBuf) msg);
+        ReferenceCountUtil.release(msg);
         Session session = SessionUtil.getSessionFromChannel(ctx);
         messageRouter.route(message, session);
     }

@@ -18,38 +18,16 @@ import org.springframework.stereotype.Component;
 @ChannelHandler.Sharable
 public class WebSocketOutHandler extends ChannelOutboundHandlerAdapter {
 
-    private final ProtobufEncoder protobufEncoder;
-
-
-    public WebSocketOutHandler(ProtobufEncoder protobufEncoder) {
-        this.protobufEncoder = protobufEncoder;
-    }
-
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof String) {
             ctx.writeAndFlush(new TextWebSocketFrame((String) msg));
         } else if (msg instanceof ByteBuf){
             // 组成私有协议
-//            ByteBuf output = encode((Message) msg);
             ChannelUtil.writeAndFlush(ctx, new BinaryWebSocketFrame((ByteBuf)msg));
         } else {
             super.write(ctx, msg, promise);
         }
     }
-
-    private ByteBuf encode(Message message) {
-        short module = message.getModule();
-        byte cmd = message.getCmd();
-        ByteBuf output = Unpooled.buffer();
-        byte[] paramBody = protobufEncoder.encode(message);
-        // total_len = module(short) + cmd(byte) + paramBody.length
-        output.writeShort(2 + 1 + paramBody.length);
-        output.writeShort(module);
-        output.writeByte(cmd);
-        output.writeBytes(paramBody);
-        return output;
-    }
-
 
 }
