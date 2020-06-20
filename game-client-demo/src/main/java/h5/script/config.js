@@ -1,8 +1,15 @@
 const PATH_PREF = "./protobuf/";
 const MODULE_CMD_PROTO = [
-    // GM模块
+    // 心跳
     {
         "module": 0,
+        "cmds": [
+            {"cmd": 65, "proto": "HeartBeatResp"},
+        ]
+    },
+    // GM模块
+    {
+        "module": 1,
         "cmds": [
             {"cmd": 1, "proto": "GmKickReq"},
             {"cmd": 65, "proto": "GmKickResp"}

@@ -1,15 +1,22 @@
 package org.lx.framework.netty.handler;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import org.lx.framework.codec.ProtobufDecoder;
+import org.lx.framework.codec.ProtobufEncoder;
 import org.lx.framework.message.Message;
 import org.lx.framework.message.MessageRouter;
+import org.lx.framework.message.heartbeat.HeartBeat;
 import org.lx.framework.net.channel.ChannelLifeCycleLink;
 import org.lx.framework.net.session.Session;
+import org.lx.framework.util.ChannelUtil;
 import org.lx.framework.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +31,17 @@ public class TcpInHandler extends ChannelInboundHandlerAdapter {
     private final MessageRouter messageRouter;
 
     private final ProtobufDecoder protobufDecoder;
+    private final HeartBeat heartBeat = new HeartBeat();;
 
-    public TcpInHandler(MessageRouter messageRouter, ProtobufDecoder protobufDecoder) {
+    public TcpInHandler(MessageRouter messageRouter, ProtobufDecoder protobufDecoder, ProtobufEncoder protobufEncoder) {
         this.messageRouter = messageRouter;
         this.protobufDecoder = protobufDecoder;
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//        super.channelRead(ctx, msg);
         LOGGER.info("TcpInHandler收到消息:" + msg);
         Message message = protobufDecoder.decode((ByteBuf) msg);
-
         ReferenceCountUtil.release(msg);
         Session session = SessionUtil.getSessionFromChannel(ctx);
         messageRouter.route(message, session);
@@ -67,4 +73,16 @@ public class TcpInHandler extends ChannelInboundHandlerAdapter {
         LOGGER.error("有异常:", cause);
     }
 
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            // 发送心跳消息，并在发送失败时关闭该连接
+            ChannelUtil.writeAndFlush(ctx.channel(), heartBeat).addListener(
+                    ChannelFutureListener.CLOSE_ON_FAILURE
+            );
+        } else {
+            // 传递事件给下一个inHandler
+            super.userEventTriggered(ctx, evt);
+        }
+    }
 }

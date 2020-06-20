@@ -22,16 +22,16 @@ public class MessageManager {
         if (meta == null) {
             return false;
         }
-        int key = KeyBuilder.buildKey(meta.module() , meta.cmd());
-        if (idToClass.containsKey(key)) {
+        int id = KeyBuilder.buildKey(meta.module() , meta.cmd());
+        if (idToClass.containsKey(id)) {
             throw new RuntimeException("待注册的Message:" + clazz.getName()
-                    + "与已存在的Message:" + idToClass.get(key).getName()
+                    + "与已存在的Message:" + idToClass.get(id).getName()
                     + " 发生冲突： 重复的module:" + meta.module() + ", cmd:" + meta.cmd()
             );
         }
         //noinspection unchecked
-        idToClass.put(key, (Class<? extends Message>) clazz);
-        classToId.put(clazz, key);
+        idToClass.put(id, (Class<? extends Message>) clazz);
+        classToId.put(clazz, id);
         return true;
     }
 

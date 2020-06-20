@@ -24,6 +24,10 @@ public class TcpClientInHandler extends ChannelInboundHandlerAdapter {
         System.out.println("TcpClientInHandler:建立连接成功, 远程服务器:" + ctx.channel().remoteAddress().toString());
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("链接断开了...");
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

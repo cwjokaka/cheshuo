@@ -29,9 +29,7 @@ public class ProtobufEncodeHandler extends ChannelOutboundHandlerAdapter {
         if (msg instanceof Message) {
             // 组成私有协议
             ByteBuf output = encode(ctx, (Message) msg);
-            ctx.writeAndFlush(output);
-            output.release();
-            promise.setSuccess();
+            ctx.writeAndFlush(output, promise);
         } else {
             super.write(ctx, msg, promise);
         }

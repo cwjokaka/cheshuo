@@ -6,6 +6,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.lx.framework.netty.handler.ProtobufEncodeHandler;
 import org.lx.framework.netty.handler.TcpInHandler;
 import org.lx.framework.netty.server.IServer;
@@ -13,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * TCP协议服务器
@@ -61,6 +64,7 @@ public class TcpSocketServer implements IServer {
                                     0       // 不消费这两个字节，由decoder统一处理
                                     )
                             );
+                            pipeline.addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
                             pipeline.addLast(tcpInHandler);
                             pipeline.addLast(protobufEncodeHandler);
                         }

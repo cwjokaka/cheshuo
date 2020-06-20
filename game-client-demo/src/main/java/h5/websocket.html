@@ -42,7 +42,7 @@
     function initWebsocket(port) {
         // 如果之前有连接，则先关闭
         if (socket && socket.readyState === WebSocket.OPEN) {
-            appendText("关闭旧连接...")
+            appendText("关闭旧连接...");
             socket.close();
         }
         byteBuf = [];
