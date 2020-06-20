@@ -5,13 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * 服务器引导，用于启动所有协议服务器
  */
-@Component
+//@Component
 public class ServerBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerBootstrap.class);

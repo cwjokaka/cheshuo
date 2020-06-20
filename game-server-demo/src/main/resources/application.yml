@@ -16,12 +16,12 @@ spring:
       port: 27017
       database: cheshuo
 
-#mybatis:
-#  mapper-locations: classpath:mapping/*Mapper.xml
-#  type-aliases-package: com.example.entity
-
-game_server:
-  ip: 127.0.0.1
-  tcp_port: 8400
-  websocket_port: 8500
-
+cheshuo:
+  ip: localhost
+  server:
+    tcp:
+      enable: true
+      port: 8400
+    websocket:
+      enable: true
+      port: 8500

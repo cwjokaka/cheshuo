@@ -21,7 +21,7 @@
         <module>game-hall</module>
         <module>game-server-demo</module>
         <module>game-client-demo</module>
-        <module>game-framework</module>
+<!--        <module>cheshuo-spring-boot-starter</module>-->
         <module>game-mb-generator</module>
     </modules>
 
@@ -48,9 +48,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.lx</groupId>
-                <artifactId>game-framework</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>cheshuo-spring-boot-starter</artifactId>
+                <version>1.0.0</version>
             </dependency>
 
             <dependency>

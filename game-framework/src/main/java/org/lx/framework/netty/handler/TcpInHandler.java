@@ -31,7 +31,7 @@ public class TcpInHandler extends ChannelInboundHandlerAdapter {
     private final MessageRouter messageRouter;
 
     private final ProtobufDecoder protobufDecoder;
-    private final HeartBeat heartBeat = new HeartBeat();;
+    private final HeartBeat heartBeat = new HeartBeat();
 
     public TcpInHandler(MessageRouter messageRouter, ProtobufDecoder protobufDecoder, ProtobufEncoder protobufEncoder) {
         this.messageRouter = messageRouter;

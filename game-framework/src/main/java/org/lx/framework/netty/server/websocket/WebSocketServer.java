@@ -12,36 +12,36 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.lx.framework.autoconfigure.AutoConfigurationProperties;
 import org.lx.framework.netty.handler.ProtobufEncodeHandler;
 import org.lx.framework.netty.handler.WebSocketInHandler;
 import org.lx.framework.netty.handler.WebSocketOutHandler;
 import org.lx.framework.netty.server.IServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  * WebSocket协议服务器
  */
-@Component("webSocketServer")
+//@Component("webSocketServer")
 public class WebSocketServer implements IServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class);
 
-    @Value("${game_server.ip}")
     private String ip;
-    @Value("${game_server.websocket_port}")
     private int port;
 
     private final WebSocketInHandler webSocketInHandler;
     private final WebSocketOutHandler webSocketOutHandler;
     private final ProtobufEncodeHandler protobufEncodeHandler;
 
-    public WebSocketServer(WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
+
+    public WebSocketServer(String ip, int port, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.webSocketInHandler = webSocketInHandler;
         this.webSocketOutHandler = webSocketOutHandler;
         this.protobufEncodeHandler = protobufEncodeHandler;
+        this.ip = ip;
+        this.port = port;
     }
 
     @Override

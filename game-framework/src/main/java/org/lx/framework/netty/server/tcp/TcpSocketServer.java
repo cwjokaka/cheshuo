@@ -7,12 +7,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.lx.framework.autoconfigure.AutoConfigurationProperties;
 import org.lx.framework.netty.handler.ProtobufEncodeHandler;
 import org.lx.framework.netty.handler.TcpInHandler;
 import org.lx.framework.netty.server.IServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -20,23 +20,23 @@ import java.util.concurrent.TimeUnit;
 /**
  * TCP协议服务器
  */
-@Component("tcpSocketServer")
+//@Component("tcpSocketServer")
 public class TcpSocketServer implements IServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpSocketServer.class);
 
-    @Value("${game_server.ip}")
     private String ip;
-    @Value("${game_server.tcp_port}")
     private int port;
 
     private TcpInHandler tcpInHandler;
 
     private ProtobufEncodeHandler protobufEncodeHandler;
 
-    public TcpSocketServer(TcpInHandler tcpInHandler, ProtobufEncodeHandler protobufEncodeHandler) {
+    public TcpSocketServer(String ip, int port, TcpInHandler tcpInHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.tcpInHandler = tcpInHandler;
         this.protobufEncodeHandler = protobufEncodeHandler;
+        this.port = port;
+        this.ip = ip;
     }
 
     public void start() {
