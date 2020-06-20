@@ -58,7 +58,7 @@ public class TcpSocketServer implements IServer {
                                     0,
                                     2,
                                     0,
-                                    2
+                                    0       // 不消费这两个字节，由decoder统一处理
                                     )
                             );
                             pipeline.addLast(tcpInHandler);

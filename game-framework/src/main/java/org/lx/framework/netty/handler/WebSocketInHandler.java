@@ -36,20 +36,9 @@ public class WebSocketInHandler extends SimpleChannelInboundHandler<BinaryWebSoc
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, BinaryWebSocketFrame msg) throws Exception {
         LOGGER.info("websock收到消息:{}", msg);
-        Message message = decode(msg);
+        Message message = protobufDecoder.decode(msg.content());
         Session session = SessionUtil.getSessionFromChannel(ctx);
         messageRouter.route(message, session);
-    }
-
-    private Message decode(BinaryWebSocketFrame msg) {
-        ByteBuf in = msg.content();
-        short total_len = in.readShort();
-        short module = in.readShort();
-        byte cmd = in.readByte();
-        int size = in.readableBytes();
-        byte[] bytes = new byte[size];
-        in.readBytes(bytes);
-        return protobufDecoder.decode(module, cmd, bytes);
     }
 
     /**

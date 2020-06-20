@@ -34,20 +34,11 @@ public class TcpInHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 //        super.channelRead(ctx, msg);
         LOGGER.info("TcpInHandler收到消息:" + msg);
-        Message message = decode((ByteBuf) msg);
+        Message message = protobufDecoder.decode((ByteBuf) msg);
+
         ReferenceCountUtil.release(msg);
         Session session = SessionUtil.getSessionFromChannel(ctx);
         messageRouter.route(message, session);
-    }
-
-    private Message decode(ByteBuf in) {
-//        short total_len = in.readShort();
-        short module = in.readShort();
-        byte cmd = in.readByte();
-        int size = in.readableBytes();
-        byte[] bytes = new byte[size];
-        in.readBytes(bytes);
-        return protobufDecoder.decode(module, cmd, bytes);
     }
 
     /**

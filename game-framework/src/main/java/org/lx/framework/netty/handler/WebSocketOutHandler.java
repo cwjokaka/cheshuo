@@ -14,6 +14,9 @@ import org.lx.framework.message.MessageManager;
 import org.lx.framework.util.ChannelUtil;
 import org.springframework.stereotype.Component;
 
+/**
+ * 用于把协议包装成Websocket帧
+ */
 @Component
 @ChannelHandler.Sharable
 public class WebSocketOutHandler extends ChannelOutboundHandlerAdapter {

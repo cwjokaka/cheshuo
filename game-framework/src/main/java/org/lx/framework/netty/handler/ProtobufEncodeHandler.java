@@ -1,6 +1,7 @@
 package org.lx.framework.netty.handler;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,19 +28,22 @@ public class ProtobufEncodeHandler extends ChannelOutboundHandlerAdapter {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof Message) {
             // 组成私有协议
-            ByteBuf output = encode((Message) msg);
+            ByteBuf output = encode(ctx, (Message) msg);
             ctx.writeAndFlush(output);
+            output.release();
+            promise.setSuccess();
         } else {
             super.write(ctx, msg, promise);
         }
     }
 
-    private ByteBuf encode(Message message) {
+    private ByteBuf encode(ChannelHandlerContext ctx, Message message) {
         short module = message.getModule();
         byte cmd = message.getCmd();
-        ByteBuf output = Unpooled.buffer();
+        ByteBuf output = ctx.alloc().buffer();
+//        ByteBuf output = Unpooled.buffer();
         byte[] paramBody = protobufEncoder.encode(message);
-        // total_len = module(short) + cmd(byte) + paramBody.length
+//         total_len = module(short) + cmd(byte) + paramBody.length
         output.writeShort(2 + 1 + paramBody.length);
         output.writeShort(module);
         output.writeByte(cmd);
