@@ -28,7 +28,6 @@ public class UserService {
         this.userManager = userManager;
     }
 
-
     /**
      * 用户注册
      * @param account 账户名
