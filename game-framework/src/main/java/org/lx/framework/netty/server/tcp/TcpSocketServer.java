@@ -7,13 +7,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
-import org.lx.framework.autoconfigure.AutoConfigurationProperties;
 import org.lx.framework.netty.handler.ProtobufEncodeHandler;
 import org.lx.framework.netty.handler.TcpInHandler;
 import org.lx.framework.netty.server.IServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -71,7 +69,11 @@ public class TcpSocketServer implements IServer {
                     });
             LOGGER.info("绑定ip:{}, port:{}", ip, port);
             ChannelFuture future = boot.bind(port).sync();
-//            future.channel().closeFuture().sync();
+            future.channel().closeFuture().addListener((evt) -> {
+                LOGGER.info("关闭TcpSocketServer事件循环组...");
+                boss.shutdownGracefully();
+                worker.shutdownGracefully();
+            });
         } catch (InterruptedException e) {
             LOGGER.error("start方法异常:{}", e.getMessage());
             e.printStackTrace();

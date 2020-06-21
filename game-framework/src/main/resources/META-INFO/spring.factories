@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.lx.framework.autoconfigure.AutoConfigurationClass
+org.lx.framework.autoconfigure.AutoConfigurationClass

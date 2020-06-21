@@ -21,7 +21,6 @@
         <module>game-hall</module>
         <module>game-server-demo</module>
         <module>game-client-demo</module>
-<!--        <module>cheshuo-spring-boot-starter</module>-->
         <module>game-mb-generator</module>
     </modules>
 

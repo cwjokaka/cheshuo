@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-@ComponentScan(value = {"org.lx.framework", "org.lx.cs.server","org.lx.cs.common"})
+@ComponentScan(value = {"org.lx.framework"})
 public class Application implements CommandLineRunner {
 
     private ServerBootstrap serverBootstrap;

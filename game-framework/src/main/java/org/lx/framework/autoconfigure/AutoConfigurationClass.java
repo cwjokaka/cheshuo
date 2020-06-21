@@ -23,10 +23,10 @@ public class AutoConfigurationClass {
 
     private AutoConfigurationProperties autoConfigurationProperties;
 
-    private TcpInHandler tcpInHandler;
+    private final TcpInHandler tcpInHandler;
     private final WebSocketInHandler webSocketInHandler;
     private final WebSocketOutHandler webSocketOutHandler;
-    private ProtobufEncodeHandler protobufEncodeHandler;
+    private final ProtobufEncodeHandler protobufEncodeHandler;
 
     public AutoConfigurationClass(AutoConfigurationProperties autoConfigurationProperties, TcpInHandler tcpInHandler, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.autoConfigurationProperties = autoConfigurationProperties;

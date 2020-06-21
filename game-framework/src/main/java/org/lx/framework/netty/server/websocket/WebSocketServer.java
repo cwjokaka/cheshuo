@@ -73,7 +73,11 @@ public class WebSocketServer implements IServer {
                     });
             LOGGER.info("绑定ip:{}, port:{}", ip, port);
             ChannelFuture future = boot.bind(port).sync();
-//            future.channel().closeFuture().sync();
+            future.channel().closeFuture().addListener((evt) -> {
+                LOGGER.info("关闭WebSocketSocket事件循环组...");
+                boss.shutdownGracefully();
+                worker.shutdownGracefully();
+            });
         } catch (InterruptedException e) {
             LOGGER.error("start方法异常:{}", e.getMessage());
             e.printStackTrace();
