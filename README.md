@@ -34,9 +34,6 @@
 | 模块名            | 说明                               |
 | ----------------- | ---------------------------------- |
 | game-client-demo  | H5界面的游戏客户端模拟, 使用TCP协议时需开启TcpAgent把ws转为TCP |
-| game-common       | 公共模块                       |
 | game-framework    | 游戏框架实现                       |
-| game-hall         | 游戏大厅(暂时无用)        |
-| game-mb-generator | Mybatis代码生成模块, 以插件方式运行 |
 | game-server-demo  | 基于game-framework实现的简单服务器demo |
 
