@@ -34,7 +34,7 @@
         <springboot.mybatis>2.1.2</springboot.mybatis>
         <lombok.version>1.18.12</lombok.version>
         <jackson.version>2.10.2</jackson.version>
-        <mysql.connector.version>8.0.13</mysql.connector.version>
+        <mysql.connector.version>8.0.16</mysql.connector.version>
     </properties>
 
 
