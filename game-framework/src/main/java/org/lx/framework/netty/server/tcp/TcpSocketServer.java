@@ -18,23 +18,22 @@ import java.util.concurrent.TimeUnit;
 /**
  * TCP协议服务器
  */
-//@Component("tcpSocketServer")
 public class TcpSocketServer implements IServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpSocketServer.class);
 
-    private String ip;
+    private String host;
     private int port;
 
     private TcpInHandler tcpInHandler;
 
     private ProtobufEncodeHandler protobufEncodeHandler;
 
-    public TcpSocketServer(String ip, int port, TcpInHandler tcpInHandler, ProtobufEncodeHandler protobufEncodeHandler) {
+    public TcpSocketServer(String host, int port, TcpInHandler tcpInHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.tcpInHandler = tcpInHandler;
         this.protobufEncodeHandler = protobufEncodeHandler;
         this.port = port;
-        this.ip = ip;
+        this.host = host;
     }
 
     public void start() {
@@ -67,8 +66,8 @@ public class TcpSocketServer implements IServer {
                             pipeline.addLast(protobufEncodeHandler);
                         }
                     });
-            LOGGER.info("绑定ip:{}, port:{}", ip, port);
-            ChannelFuture future = boot.bind(port).sync();
+            LOGGER.info("绑定host:{}, port:{}", host, port);
+            ChannelFuture future = boot.bind(host, port).sync();
             future.channel().closeFuture().addListener((evt) -> {
                 LOGGER.info("关闭TcpSocketServer事件循环组...");
                 boss.shutdownGracefully();

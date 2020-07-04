@@ -30,7 +30,6 @@ public class SessionManager extends AbstractChannelLifeCycle {
         LOGGER.info("通道激活:{}, 创建Session...", ctx.channel());
         Session session = createSession();
         session.setChannel(ctx.channel())
-                .setChannelType(ChannelType.WEBSOCKET)
                 .setIp(ChannelUtil.getChannelIP(ctx.channel()));
         if (!SessionUtil.addSessionToChannel(ctx.channel(), session)) {
             LOGGER.warn("session重复添加, 关闭此通道, ip:{}", session.getIp());

@@ -27,8 +27,6 @@ public class Session {
     // 远程连接的IP
     private String ip;
 
-    private ChannelType channelType;
-
     public Session(Long sessionId) {
         this.sessionId = sessionId;
     }

@@ -2,7 +2,7 @@ package org.lx.framework.autoconfigure;
 
 public class WebsocketConfig {
 
-    private boolean enable = false;
+    private boolean enable = true;
     private int port = 8500;
 
     public boolean isEnable() {

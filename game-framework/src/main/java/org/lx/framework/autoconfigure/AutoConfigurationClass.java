@@ -47,17 +47,17 @@ public class AutoConfigurationClass {
     @Bean
     public IServer tcpSocketServer() {
         return new TcpSocketServer(
-                autoConfigurationProperties.getIp(),
+                autoConfigurationProperties.getHost(),
                 autoConfigurationProperties.getServer().getTcp().getPort(),
                 tcpInHandler,
                 protobufEncodeHandler);
     }
 
-    @ConditionalOnProperty(prefix="cheshuo.server.websocket",name = "enable", havingValue = "true")
+    @ConditionalOnProperty(prefix="cheshuo.server.websocket",name = "enable", havingValue = "true", matchIfMissing = true)
     @Bean
     public IServer websocketServer() {
         return new WebSocketServer(
-                autoConfigurationProperties.getIp(),
+                autoConfigurationProperties.getHost(),
                 autoConfigurationProperties.getServer().getWebsocket().getPort(),
                 webSocketInHandler,
                 webSocketOutHandler,

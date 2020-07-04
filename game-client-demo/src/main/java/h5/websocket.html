@@ -11,7 +11,7 @@
     </select>
     <form onsubmit="return false">
         <label>module:</label>
-        <input name="module" id="module" type="number" value="100"/><br>
+        <input name="module" id="module" type="number" value="3"/><br>
         <label>cmd:</label>
         <input name="cmd" id="cmd" type="number" value="0"/><br>
         <textarea id="message" name="message" style="height: 300px; width: 300px"></textarea>
@@ -30,7 +30,8 @@
     var totalLen = 0;
 
     // document.getElementById("message").value = "{\"id\": 2}";
-    document.getElementById("message").value = "{\"account\": \"cwjokaka\", \"password\": \"33207a\"}";
+    // document.getElementById("message").value = "{\"account\": \"cwjokaka\", \"password\": \"33207a\"}";
+    document.getElementById("message").value = "{\"text\": \"haha\"}";
 
     // 判断当前浏览器是否支持websocket
     if(window.WebSocket) {
@@ -86,7 +87,7 @@
         // 获取协议总长度(2byte)
         let dataview = new DataView(new Uint8Array(byteBuf).buffer);
         totalLen = dataview.getUint16(0);
-        console.log("获取数据包总长度:" + totalLen + 2);
+        console.log("获取数据包总长度:" + (totalLen + 2));
         if (byteBuf.length < totalLen + 2) {
             return;
         }
@@ -95,12 +96,20 @@
         console.log("module:" + module + ", cmd:" + cmd);
         let param_body = dataview.buffer.slice(5, totalLen + 2);
         let bytes = new Uint8Array(param_body);
-        let data = decode(module, cmd, bytes);
         let rt = document.getElementById("responseText");
-        rt.value = rt.value + "\n" + "服务端返回module:" + module +
-            ", cmd:" + cmd +
-            ", data:" + JSON.stringify(data);
-        byteBuf = [];
+        try {
+            // debugger
+            let data = decode(module, cmd, bytes);
+            rt.value = rt.value + "\n" + "服务端返回module:" + module +
+                ", cmd:" + cmd +
+                ", data:" + JSON.stringify(data);
+        } catch (e) {
+            rt.value = rt.value + "\n" + "服务端module:" + module +
+                ", cmd:" + cmd +
+                ", protobuf解析出错:" + e;
+        } finally {
+            byteBuf = [];
+        }
     }
 
     /**

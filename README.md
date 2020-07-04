@@ -37,3 +37,102 @@
 | game-framework    | 游戏框架实现                       |
 | game-server-demo  | 基于game-framework实现的简单服务器demo |
 
+
+
+#### 快速开始:
+
+1.添加依赖
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>cheshuo-spring-boot-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
+
+2.参考配置application.yml
+
+```yaml
+cheshuo:
+  host: localhost		# 服务地址, 默认0.0.0.0
+  server:
+    tcp:
+      enable: true		# 开启TCP服务, 默认false
+      port: 8400		# TCP服务端口, 默认8400
+    websocket:
+      enable: true		# 开启Websocket服务, 默认true
+      port: 8500		# Websocket服务端口, 默认8500
+```
+
+3.编写请求&响应体
+
+```java
+@MessageMeta(module = Modules.USER, cmd = UserCmd.LOGIN_REQ)
+public class LoginReq extends Message {
+    private String account;
+    private String password;
+	// 省略getter & setter...
+}
+```
+
+```java
+@MessageMeta(module = Modules.USER, cmd = UserCmd.LOGIN_RESP)
+public class LoginResp extends Message {
+	private Integer code;
+	// 省略getter & setter...
+}
+
+```
+
+4.注册Handler
+
+```java
+// module类型为short, 表示业务模块编号
+@Handler(module = Modules.USER)
+public class UserHandler {
+    
+    // 业务处理类
+    private final UserService userService;
+    
+    // 省略getter & setter...
+    
+    // cmd类型为short, 表示具体业务
+    @Mapping(cmd = UserCmd.LOGIN_REQ)
+    public LoginResp login(Session session, LoginReq loginReq) {
+        return userService.login(session, loginReq);
+    }
+}
+
+```
+
+5.引导启动
+
+```java
+import org.lx.framework.ServerBootstrap;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+
+@SpringBootApplication
+public class Application implements CommandLineRunner {
+
+    private ServerBootstrap serverBootstrap;
+
+    public Application(ServerBootstrap serverBootstrap) {
+        this.serverBootstrap = serverBootstrap;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Override
+    public void run(String... strings) throws Exception {
+        serverBootstrap.startAll();
+    }
+
+}
+```
+

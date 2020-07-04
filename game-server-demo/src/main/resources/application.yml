@@ -17,7 +17,7 @@ spring:
       database: cheshuo
 
 cheshuo:
-  ip: localhost
+  host: localhost
   server:
     tcp:
       enable: true

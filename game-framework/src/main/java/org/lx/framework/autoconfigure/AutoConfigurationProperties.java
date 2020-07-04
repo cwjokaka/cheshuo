@@ -6,16 +6,16 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 @ConfigurationProperties(prefix = "cheshuo")
 public class AutoConfigurationProperties {
 
-    private String ip = "localhost";
+    private String host = "0.0.0.0";
     @NestedConfigurationProperty
     private ServerConfig server = new ServerConfig();
 
-    public String getIp() {
-        return ip;
+    public String getHost() {
+        return host;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public ServerConfig getServer() {

@@ -15,6 +15,14 @@ const MODULE_CMD_PROTO = [
             {"cmd": 65, "proto": "GmKickResp"}
         ]
     },
+    // Echo模块
+    {
+        "module": 3,
+        "cmds": [
+            {"cmd": 0, "proto": "EchoReq"},
+            {"cmd": 64, "proto": "EchoResp"}
+        ]
+    },
     // 聊天模块
     {
         "module": 101,

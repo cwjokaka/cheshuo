@@ -23,12 +23,11 @@ import org.slf4j.LoggerFactory;
 /**
  * WebSocket协议服务器
  */
-//@Component("webSocketServer")
 public class WebSocketServer implements IServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class);
 
-    private String ip;
+    private String host;
     private int port;
 
     private final WebSocketInHandler webSocketInHandler;
@@ -36,11 +35,11 @@ public class WebSocketServer implements IServer {
     private final ProtobufEncodeHandler protobufEncodeHandler;
 
 
-    public WebSocketServer(String ip, int port, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
+    public WebSocketServer(String host, int port, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.webSocketInHandler = webSocketInHandler;
         this.webSocketOutHandler = webSocketOutHandler;
         this.protobufEncodeHandler = protobufEncodeHandler;
-        this.ip = ip;
+        this.host = host;
         this.port = port;
     }
 
@@ -71,8 +70,8 @@ public class WebSocketServer implements IServer {
 
                         }
                     });
-            LOGGER.info("绑定ip:{}, port:{}", ip, port);
-            ChannelFuture future = boot.bind(port).sync();
+            LOGGER.info("绑定host:{}, port:{}", host, port);
+            ChannelFuture future = boot.bind(host, port).sync();
             future.channel().closeFuture().addListener((evt) -> {
                 LOGGER.info("关闭WebSocketSocket事件循环组...");
                 boss.shutdownGracefully();
