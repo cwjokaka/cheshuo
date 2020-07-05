@@ -40,11 +40,11 @@
 1.添加依赖
 
 ```xml
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>cheshuo-spring-boot-starter</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>cheshuo-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
 ```
 
 2.参考配置application.yml
