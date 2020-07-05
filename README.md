@@ -5,41 +5,37 @@
 
 
 
-#### 目前支持协议: 
+## 目前支持协议: 
 
 - TCP
-
 - Websocket
 
   
 
 
-#### 项目依赖:
+## 项目依赖:
 
-| 名称           | 用于                                          | 链接                                      |
-| :------------- | --------------------------------------------- | ----------------------------------------- |
-| JDK1.8         | Java环境                                      |                                           |
-| Springboot 2.X | 主要使用IOC与简化配置，以及方便日后使用全家桶 | https://spring.io/projects/spring-boot    |
-| Netty 4.X      | NIO通讯框架                                   | https://netty.io/                         |
-| MongoDB        | 服务器demo数据持久化                          | https://www.mongodb.com/                  |
-| jprotobuf      | 简化java protobuf编解码                       | https://github.com/jhunters/jprotobuf     |
-| protobuf.js    | H5客户端protobuf支持                          | https://github.com/protobufjs/protobuf.js |
-| lombok         | 简化java代码编写                              | https://github.com/rzwitserloot/lombok    |
-| Maven          | 项目构建                                      |                                           |
+| 名称           | 用于                                          | 链接                                   |
+| :------------- | --------------------------------------------- | -------------------------------------- |
+| JDK1.8         | Java环境                                      |                                        |
+| Springboot 2.X | 主要使用IOC与简化配置，以及方便日后使用全家桶 | https://spring.io/projects/spring-boot |
+| Netty 4.X      | NIO通讯框架                                   | https://netty.io/                      |
+| jprotobuf      | 简化java protobuf编解码                       | https://github.com/jhunters/jprotobuf  |
+| Maven          | 项目构建                                      |                                        |
 
 
 
-#### 模块介绍:
+## 模块介绍:
 
 | 模块名            | 说明                               |
 | ----------------- | ---------------------------------- |
 | game-client-demo  | H5界面的游戏客户端模拟, 使用TCP协议时需开启TcpAgent把ws转为TCP |
-| game-framework    | 游戏框架实现                       |
+| game-framework    | 游戏服务框架的实现                   |
 | game-server-demo  | 基于game-framework实现的简单服务器demo |
 
 
 
-#### 快速开始:
+## 快速开始:
 
 1.添加依赖
 
@@ -110,10 +106,6 @@ public class UserHandler {
 
 ```java
 import org.lx.framework.ServerBootstrap;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -136,3 +128,6 @@ public class Application implements CommandLineRunner {
 }
 ```
 
+## License
+
+Open source based on **MIT**

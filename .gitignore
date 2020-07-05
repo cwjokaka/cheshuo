@@ -6,3 +6,4 @@
 #/game-server-demo/target/
 
 .idea
+*.iml
