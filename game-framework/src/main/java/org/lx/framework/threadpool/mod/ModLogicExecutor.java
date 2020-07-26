@@ -1,16 +1,17 @@
 package org.lx.framework.threadpool.mod;
 
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.lx.framework.reflect.MethodInfo;
-import org.lx.framework.threadpool.AbsLogicExecutor;
-import org.lx.framework.threadpool.AbsTask;
-import org.lx.framework.threadpool.LogicExecutor;
-import org.lx.framework.threadpool.Task;
+import org.lx.framework.threadpool.*;
 import org.lx.framework.util.ChannelUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 根据SessionId与线程池大小进行取模
+ */
 @Component
 public class ModLogicExecutor extends AbsLogicExecutor {
 
@@ -20,27 +21,18 @@ public class ModLogicExecutor extends AbsLogicExecutor {
 
     public ModLogicExecutor() {
         for (int i=0; i<pool.length; i++) {
-            pool[i] = Executors.newSingleThreadExecutor();
+            pool[i] = Executors.newSingleThreadExecutor(new DefaultThreadFactory("ModLogicExecutor-" + i));
         }
     }
 
     @Override
     public void doExec(AbsTask task) {
-        if (!(task instanceof ModTask)) {
+        if (!(task instanceof CmdTask)) {
             return;
         }
-        ModTask modTask = (ModTask) task;
-        int index = (int)(modTask.getSessionId() % SYS_CORE);
-        //            Object resp = task.getMethod().invoke(ta.getHandler(), params);
-        //            ChannelUtil.writeAndFlush(modTask.getSession().getChannel(), resp);
+        CmdTask cmdTask = (CmdTask) task;
+        int index = (int)(cmdTask.getSessionId() % SYS_CORE);
         pool[index].execute(task::run);
-
     }
-
-//    @Override
-//    public void exec(AbsTask task, Object[] params) {
-//    }
-
-
 
 }

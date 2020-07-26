@@ -1,7 +1,5 @@
 package org.lx.framework.threadpool;
 
-import org.lx.framework.reflect.MethodInfo;
-
 public abstract class AbsLogicExecutor implements LogicExecutor {
 
     @Override

@@ -27,19 +27,19 @@ public class SessionManager extends AbstractChannelLifeCycle {
 
     @Override
     public void onChannelActive(ChannelHandlerContext ctx) {
-        LOGGER.info("通道激活:{}, 创建Session...", ctx.channel());
+        LOGGER.debug("通道激活:{}, 创建Session...", ctx.channel());
         Session session = createSession();
         session.setChannel(ctx.channel())
                 .setIp(ChannelUtil.getChannelIP(ctx.channel()));
         if (!SessionUtil.addSessionToChannel(ctx.channel(), session)) {
-            LOGGER.warn("session重复添加, 关闭此通道, ip:{}", session.getIp());
+            LOGGER.debug("session重复添加, 关闭此通道, ip:{}", session.getIp());
             ChannelUtil.closeChannel(ctx);
         }
     }
 
     @Override
     public void onChannelInactive(ChannelHandlerContext ctx) {
-        LOGGER.info("通道关闭:{}, 删除Session...", ctx.channel());
+        LOGGER.debug("通道关闭:{}, 删除Session...", ctx.channel());
         sessionMap.remove(SessionUtil.getSessionFromChannel(ctx).getSessionId());
     }
 

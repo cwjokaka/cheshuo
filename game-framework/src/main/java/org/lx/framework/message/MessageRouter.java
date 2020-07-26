@@ -54,17 +54,6 @@ public class MessageRouter {
 
         // params包含 Session + Message实现类
         final Object[] params = constructParams(methodInfo.getMethod().getParameterTypes(), message, session);
-        // TODO 改为使用ModLogicExecutor
-//        CommonThreadPool.execute(() -> {
-//            try {
-//                Object resp = methodInfo.getMethod().invoke(methodInfo.getHandler(), params);
-//                ChannelUtil.writeAndFlush(session.getChannel(), resp);
-//            } catch (IllegalAccessException e) {
-//                e.printStackTrace();
-//            } catch (InvocationTargetException e) {
-//                e.printStackTrace();
-//            }
-//        });
         logicExecutor.exec(new CmdTask(
                 methodInfo.getHandler(),
                 methodInfo.getMethod(),

@@ -28,6 +28,7 @@ public class SessionUtil {
         Attribute<Session> sessionAttr = channel.attr(SESSION_ATTRIBUTE_KEY);
         return sessionAttr.get();
     }
+
     public static Session getSessionFromChannel(ChannelHandlerContext ctx) {
         return getSessionFromChannel(ctx.channel());
     }
