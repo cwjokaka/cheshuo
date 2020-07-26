@@ -4,7 +4,10 @@ import org.lx.framework.net.session.Session;
 import org.lx.framework.protocol.KeyBuilder;
 import org.lx.framework.reflect.MethodInfo;
 import org.lx.framework.task.CommonThreadPool;
+import org.lx.framework.threadpool.AbsLogicExecutor;
+import org.lx.framework.threadpool.CmdTask;
 import org.lx.framework.util.ChannelUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +23,9 @@ public class MessageRouter {
 
     // 路由表 --- key: module和cmd的组合  value: 方法体
     private final Map<Integer, MethodInfo> messageToMethod = new HashMap<>();
+
+    @Autowired
+    private AbsLogicExecutor logicExecutor;
 
     public void registerMethodInfo(short module, byte cmd, MethodInfo methodInfo) {
         int key = KeyBuilder.buildKey(module, cmd);
@@ -48,16 +54,23 @@ public class MessageRouter {
 
         // params包含 Session + Message实现类
         final Object[] params = constructParams(methodInfo.getMethod().getParameterTypes(), message, session);
-        CommonThreadPool.execute(() -> {
-            try {
-                Object resp = methodInfo.getMethod().invoke(methodInfo.getHandler(), params);
-                ChannelUtil.writeAndFlush(session.getChannel(), resp);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
+        // TODO 改为使用ModLogicExecutor
+//        CommonThreadPool.execute(() -> {
+//            try {
+//                Object resp = methodInfo.getMethod().invoke(methodInfo.getHandler(), params);
+//                ChannelUtil.writeAndFlush(session.getChannel(), resp);
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            } catch (InvocationTargetException e) {
+//                e.printStackTrace();
+//            }
+//        });
+        logicExecutor.exec(new CmdTask(
+                methodInfo.getHandler(),
+                methodInfo.getMethod(),
+                params,
+                session.getSessionId())
+        );
 
     }
 
