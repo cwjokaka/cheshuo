@@ -16,18 +16,19 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * @author cwjokaka
  * TCP协议服务器
  */
 public class TcpSocketServer implements IServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpSocketServer.class);
 
-    private String host;
-    private int port;
+    private final String host;
+    private final int port;
 
-    private TcpInHandler tcpInHandler;
+    private final TcpInHandler tcpInHandler;
 
-    private ProtobufEncodeHandler protobufEncodeHandler;
+    private final ProtobufEncodeHandler protobufEncodeHandler;
 
     public TcpSocketServer(String host, int port, TcpInHandler tcpInHandler, ProtobufEncodeHandler protobufEncodeHandler) {
         this.tcpInHandler = tcpInHandler;
@@ -36,6 +37,7 @@ public class TcpSocketServer implements IServer {
         this.host = host;
     }
 
+    @Override
     public void start() {
         LOGGER.info("开启Socket服务器...");
         EventLoopGroup boss = new NioEventLoopGroup(1);
@@ -50,7 +52,7 @@ public class TcpSocketServer implements IServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
+                        protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
                             // 解决分包与粘包, 指定传递最大为65536字节，长度字段为2byte(short), 消费这两个byte直接把Message字节传到下一个Handler
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(
@@ -76,10 +78,6 @@ public class TcpSocketServer implements IServer {
         } catch (InterruptedException e) {
             LOGGER.error("start方法异常:{}", e.getMessage());
             e.printStackTrace();
-        } finally {
-//            LOGGER.info("关闭TcpSocketServer事件循环组...");
-//            boss.shutdownGracefully();
-//            worker.shutdownGracefully();
         }
     }
 

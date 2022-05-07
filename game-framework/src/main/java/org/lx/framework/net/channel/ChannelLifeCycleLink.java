@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public enum ChannelLifeCycleLink implements ChannelLifeCycle {
-
+    // 单例
     INSTANCE;
 
     private final List<ChannelLifeCycle> link = new LinkedList<>();

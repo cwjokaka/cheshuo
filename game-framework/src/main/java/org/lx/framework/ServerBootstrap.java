@@ -9,8 +9,8 @@ import java.util.Map;
 
 /**
  * 服务器引导，用于启动所有协议服务器
+ * @author cwjokaka
  */
-//@Component
 public class ServerBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerBootstrap.class);

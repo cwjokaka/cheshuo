@@ -9,7 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注解在{@link org.lx.framework.message.Message}的子类上
+ * @author cwjokaka
+ * 注解在{@link org.lx.framework.message.Message}的子类上, 代表被注解的类是消息命令
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

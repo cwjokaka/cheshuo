@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * 消息路由
- *  根据消息类型来获取具体的指令执行器, 并执行之
+ * 根据消息类型来获取具体的指令执行器, 并执行之
  */
 @Component
 public class MessageRouter {

@@ -9,14 +9,27 @@ import java.util.Map;
 
 
 /**
- * 自定义消息管理器,用于保存 指令ID(module + cmd组成)与Message具体类型之间的联系
+ * @author cwjokaka
+ * 自定义消息管理器,用于保存 指令ID(由module + cmd组成)与Message具体类型之间的联系
  */
 @Component
 public class MessageManager {
 
-    private Map<Integer, Class<? extends Message>> idToClass = new HashMap<>();
-    private Map<Class<?>, Integer> classToId = new HashMap<>();
+    /**
+     * 指令ID和消息类信息的映射关系
+     */
+    private final Map<Integer, Class<? extends Message>> idToClass = new HashMap<>();
 
+    /**
+     * 消息类信息和指令ID的映射关系
+     */
+    private final Map<Class<?>, Integer> classToId = new HashMap<>();
+
+    /**
+     * 注册消息类
+     * @param clazz 消息类
+     * @return 是否注册成功
+     */
     public boolean register(Class<?> clazz) {
         MessageMeta meta = clazz.getAnnotation(MessageMeta.class);
         if (meta == null) {

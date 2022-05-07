@@ -1,5 +1,8 @@
 package org.lx.framework.netty.server;
 
+/**
+ * @author cwjokaka
+ */
 public interface IServer {
 
     /**

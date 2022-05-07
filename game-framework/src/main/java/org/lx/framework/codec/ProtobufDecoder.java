@@ -16,7 +16,7 @@ import java.io.IOException;
  * protobuf解码器
  */
 @Component
-public class ProtobufDecoder{
+public class ProtobufDecoder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtobufDecoder.class);
 
@@ -39,7 +39,7 @@ public class ProtobufDecoder{
     }
 
     public Message decode(ByteBuf in) {
-        short total_len = in.readShort();
+        short totalLen = in.readShort();
         short module = in.readShort();
         byte cmd = in.readByte();
         int size = in.readableBytes();

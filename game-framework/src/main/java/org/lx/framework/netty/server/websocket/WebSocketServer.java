@@ -80,10 +80,6 @@ public class WebSocketServer implements IServer {
         } catch (InterruptedException e) {
             LOGGER.error("start方法异常:{}", e.getMessage());
             e.printStackTrace();
-        } finally {
-//            LOGGER.info("关闭WebSocketSocket事件循环组...");
-//            boss.shutdownGracefully();
-//            worker.shutdownGracefully();
         }
     }
 

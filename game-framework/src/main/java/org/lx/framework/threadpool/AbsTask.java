@@ -12,11 +12,11 @@ import java.lang.reflect.Method;
  */
 public abstract class AbsTask implements Task {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AbsTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbsTask.class);
 
-    private Object handler;
-    private Method method;
-    private Object[] params;
+    private final Object handler;
+    private final Method method;
+    private final Object[] params;
 
     public AbsTask(Object handler, Method method, Object[] params) {
         this.handler = handler;
