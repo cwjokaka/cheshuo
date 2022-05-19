@@ -2,10 +2,7 @@ package org.lx.framework.netty.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
@@ -24,27 +21,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ChannelHandler.Sharable
-public class TcpInHandler extends ChannelInboundHandlerAdapter {
+public class TcpInHandler extends SimpleChannelInboundHandler<Message> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpInHandler.class);
 
     private final MessageRouter messageRouter;
 
-    private final ProtobufDecoder protobufDecoder;
     private final HeartBeat heartBeat = new HeartBeat();
 
-    public TcpInHandler(MessageRouter messageRouter, ProtobufDecoder protobufDecoder, ProtobufEncoder protobufEncoder) {
+    public TcpInHandler(MessageRouter messageRouter) {
         this.messageRouter = messageRouter;
-        this.protobufDecoder = protobufDecoder;
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Message msg)  {
         LOGGER.info("TcpInHandler收到消息:" + msg);
-        Message message = protobufDecoder.decode((ByteBuf) msg);
-        ReferenceCountUtil.release(msg);
         Session session = SessionUtil.getSessionFromChannel(ctx);
-        messageRouter.route(message, session);
+        messageRouter.route(msg, session);
     }
 
     /**

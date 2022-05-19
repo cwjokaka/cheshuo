@@ -8,9 +8,15 @@ import org.lx.framework.util.ChannelUtil;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+/**
+ * @author LENOVO
+ */
 public class CmdTask extends AbsTask {
 
-    private long sessionId;
+    /**
+     * channel建立好后生成的会话id
+     */
+    private final long sessionId;
 
     public CmdTask(Object handler, Method method, Object[] params, long sessionId) {
         super(handler, method, params);
@@ -22,7 +28,6 @@ public class CmdTask extends AbsTask {
         SessionManager sm = ApplicationContextUtil.getBean(SessionManager.class);
         Session session = sm.getSession(sessionId);
         if (session != null) {
-//            session.getChannel();
             ChannelUtil.writeAndFlush(session.getChannel(), res);
         }
     }
@@ -30,4 +35,5 @@ public class CmdTask extends AbsTask {
     public long getSessionId() {
         return sessionId;
     }
+
 }

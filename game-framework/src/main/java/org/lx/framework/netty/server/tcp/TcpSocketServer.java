@@ -7,6 +7,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.lx.framework.netty.handler.ProtobufDecodeHandler;
 import org.lx.framework.netty.handler.ProtobufEncodeHandler;
 import org.lx.framework.netty.handler.TcpInHandler;
 import org.lx.framework.netty.server.IServer;
@@ -29,10 +30,15 @@ public class TcpSocketServer implements IServer {
     private final TcpInHandler tcpInHandler;
 
     private final ProtobufEncodeHandler protobufEncodeHandler;
+    private final ProtobufDecodeHandler protobufDecodeHandler;
 
-    public TcpSocketServer(String host, int port, TcpInHandler tcpInHandler, ProtobufEncodeHandler protobufEncodeHandler) {
+    public TcpSocketServer(String host, int port, TcpInHandler tcpInHandler,
+                           ProtobufEncodeHandler protobufEncodeHandler,
+                           ProtobufDecodeHandler protobufDecodeHandler
+    ) {
         this.tcpInHandler = tcpInHandler;
         this.protobufEncodeHandler = protobufEncodeHandler;
+        this.protobufDecodeHandler = protobufDecodeHandler;
         this.port = port;
         this.host = host;
     }
@@ -60,10 +66,11 @@ public class TcpSocketServer implements IServer {
                                     0,
                                     2,
                                     0,
-                                    0       // 不消费这两个字节，由decoder统一处理
+                                    2       // 消费这两个字节
                                     )
                             );
-                            pipeline.addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
+                            pipeline.addLast(protobufDecodeHandler);
+//                            pipeline.addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
                             pipeline.addLast(tcpInHandler);
                             pipeline.addLast(protobufEncodeHandler);
                         }

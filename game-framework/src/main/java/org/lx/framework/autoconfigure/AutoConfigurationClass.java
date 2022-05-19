@@ -1,10 +1,7 @@
 package org.lx.framework.autoconfigure;
 
 import org.lx.framework.ServerBootstrap;
-import org.lx.framework.netty.handler.ProtobufEncodeHandler;
-import org.lx.framework.netty.handler.TcpInHandler;
-import org.lx.framework.netty.handler.WebSocketInHandler;
-import org.lx.framework.netty.handler.WebSocketOutHandler;
+import org.lx.framework.netty.handler.*;
 import org.lx.framework.netty.server.IServer;
 import org.lx.framework.netty.server.tcp.TcpSocketServer;
 import org.lx.framework.netty.server.websocket.WebSocketServer;
@@ -29,13 +26,15 @@ public class AutoConfigurationClass {
     private final WebSocketInHandler webSocketInHandler;
     private final WebSocketOutHandler webSocketOutHandler;
     private final ProtobufEncodeHandler protobufEncodeHandler;
+    private final ProtobufDecodeHandler protobufDecodeHandler;
 
-    public AutoConfigurationClass(AutoConfigurationProperties autoConfigurationProperties, TcpInHandler tcpInHandler, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
+    public AutoConfigurationClass(AutoConfigurationProperties autoConfigurationProperties, TcpInHandler tcpInHandler, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler, ProtobufDecodeHandler protobufDecodeHandler) {
         this.autoConfigurationProperties = autoConfigurationProperties;
         this.tcpInHandler = tcpInHandler;
         this.webSocketInHandler = webSocketInHandler;
         this.webSocketOutHandler = webSocketOutHandler;
         this.protobufEncodeHandler = protobufEncodeHandler;
+        this.protobufDecodeHandler = protobufDecodeHandler;
     }
 
     @Bean
@@ -50,7 +49,8 @@ public class AutoConfigurationClass {
                 autoConfigurationProperties.getHost(),
                 autoConfigurationProperties.getServer().getTcp().getPort(),
                 tcpInHandler,
-                protobufEncodeHandler);
+                protobufEncodeHandler,
+                protobufDecodeHandler);
     }
 
     @ConditionalOnProperty(prefix="cheshuo.server.websocket",name = "enable", havingValue = "true", matchIfMissing = true)

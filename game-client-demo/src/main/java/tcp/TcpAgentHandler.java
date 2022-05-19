@@ -1,19 +1,21 @@
 package tcp;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.*;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 
+import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ChannelHandler.Sharable
 public class TcpAgentHandler extends SimpleChannelInboundHandler<BinaryWebSocketFrame> {
 
-    // 每条channel对应一个TcpClient
-    private final Map<Channel, TcpClient> distributes = new ConcurrentHashMap<>();
+    // key: agentChannel value: clientChannel
+    private final Map<Channel, Channel> distributes = new ConcurrentHashMap<>();
     private final static TcpAgentHandler INSTANCE = new TcpAgentHandler();
 
     private TcpAgentHandler(){}
@@ -25,31 +27,47 @@ public class TcpAgentHandler extends SimpleChannelInboundHandler<BinaryWebSocket
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, BinaryWebSocketFrame msg) throws Exception {
         System.out.println("TcpAgentHandler:收到消息");
-        TcpClient tcpClient = distributes.get(ctx.channel());
+        Channel clientChannel = distributes.get(ctx.channel());
         int length = msg.content().readableBytes();
         byte[] data = new byte[length];
         msg.content().readBytes(data);
         System.out.println("TcpAgentHandler:转发消息给Tcp服务器..." + new String(data));
-        tcpClient.sendMessage(data);
+        clientChannel.writeAndFlush(Unpooled.copiedBuffer(data));
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-        System.out.println("TcpAgent:建立了新连接, 创建TcpClient连接服务器...");
-        TcpClient client = new TcpClient(ctx.channel());
-        distributes.put(ctx.channel(), client);
-        new Thread(() -> {
-            try {
-                client.start();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        // 创建一个Bootstrap类的实例以连接到服务器
+        Bootstrap bootstrap = new Bootstrap();
+        // 指定Channel的实现
+        bootstrap
+                // 使用与分配给已被接受的子Channel相同的EventLoop
+                .group(ctx.channel().eventLoop())
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel ch) throws Exception {
+                        ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new TcpClientInHandler(ctx.channel()));
+                    }
+                });
+
+        // 连接到远程节点
+        ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress("localhost", 8400));
+        connectFuture.addListener((future -> {
+            if (future.isSuccess()) {
+                System.out.println("连接成功");
+                distributes.put(ctx.channel(), connectFuture.channel());
             }
-        }).start();
+        }));
+
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("连接断开");
         distributes.remove(ctx.channel());
     }
 }

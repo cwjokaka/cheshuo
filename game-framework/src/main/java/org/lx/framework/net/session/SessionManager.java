@@ -16,14 +16,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Session管理器
+ * @author LENOVO
  */
 @Component
 public class SessionManager extends AbstractChannelLifeCycle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
 
-    private static final AtomicLong idGenerator = new AtomicLong(0);
-    private static final Map<Long, Session> sessionMap = new ConcurrentHashMap<>();
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
+    private static final Map<Long, Session> SESSION_MAP = new ConcurrentHashMap<>();
 
     @Override
     public void onChannelActive(ChannelHandlerContext ctx) {
@@ -40,13 +41,13 @@ public class SessionManager extends AbstractChannelLifeCycle {
     @Override
     public void onChannelInactive(ChannelHandlerContext ctx) {
         LOGGER.debug("通道关闭:{}, 删除Session...", ctx.channel());
-        sessionMap.remove(SessionUtil.getSessionFromChannel(ctx).getSessionId());
+        SESSION_MAP.remove(SessionUtil.getSessionFromChannel(ctx).getSessionId());
     }
 
     public Session createSession() {
-        long sid = idGenerator.addAndGet(1);
+        long sid = ID_GENERATOR.addAndGet(1);
         Session session = new Session(sid);
-        sessionMap.put(sid, session);
+        SESSION_MAP.put(sid, session);
         return session;
     }
 
@@ -54,7 +55,7 @@ public class SessionManager extends AbstractChannelLifeCycle {
         if (sid == null) {
             return null;
         }
-        return sessionMap.get(sid);
+        return SESSION_MAP.get(sid);
     }
 
 

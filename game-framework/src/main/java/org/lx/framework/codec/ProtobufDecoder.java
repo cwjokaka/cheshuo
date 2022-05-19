@@ -39,7 +39,6 @@ public class ProtobufDecoder {
     }
 
     public Message decode(ByteBuf in) {
-        short totalLen = in.readShort();
         short module = in.readShort();
         byte cmd = in.readByte();
         int size = in.readableBytes();

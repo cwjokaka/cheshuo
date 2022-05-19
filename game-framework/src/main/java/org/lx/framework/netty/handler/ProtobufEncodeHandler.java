@@ -39,7 +39,6 @@ public class ProtobufEncodeHandler extends ChannelOutboundHandlerAdapter {
         short module = message.getModule();
         byte cmd = message.getCmd();
         ByteBuf output = ctx.alloc().buffer();
-//        ByteBuf output = Unpooled.buffer();
         byte[] paramBody = protobufEncoder.encode(message);
 //         total_len = module(short) + cmd(byte) + paramBody.length
         output.writeShort(2 + 1 + paramBody.length);
@@ -48,6 +47,5 @@ public class ProtobufEncodeHandler extends ChannelOutboundHandlerAdapter {
         output.writeBytes(paramBody);
         return output;
     }
-
 
 }
