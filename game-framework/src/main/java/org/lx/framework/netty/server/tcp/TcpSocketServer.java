@@ -70,7 +70,7 @@ public class TcpSocketServer implements IServer {
                                     )
                             );
                             pipeline.addLast(protobufDecodeHandler);
-//                            pipeline.addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
+                            pipeline.addLast(new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
                             pipeline.addLast(tcpInHandler);
                             pipeline.addLast(protobufEncodeHandler);
                         }

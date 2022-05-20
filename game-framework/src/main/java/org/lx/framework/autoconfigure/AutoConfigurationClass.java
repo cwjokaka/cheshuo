@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 @Configuration
@@ -22,20 +23,20 @@ public class AutoConfigurationClass {
 
     private AutoConfigurationProperties autoConfigurationProperties;
 
-    private final TcpInHandler tcpInHandler;
-    private final WebSocketInHandler webSocketInHandler;
-    private final WebSocketOutHandler webSocketOutHandler;
-    private final ProtobufEncodeHandler protobufEncodeHandler;
-    private final ProtobufDecodeHandler protobufDecodeHandler;
+    @Resource
+    private TcpInHandler tcpInHandler;
 
-    public AutoConfigurationClass(AutoConfigurationProperties autoConfigurationProperties, TcpInHandler tcpInHandler, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler, ProtobufDecodeHandler protobufDecodeHandler) {
-        this.autoConfigurationProperties = autoConfigurationProperties;
-        this.tcpInHandler = tcpInHandler;
-        this.webSocketInHandler = webSocketInHandler;
-        this.webSocketOutHandler = webSocketOutHandler;
-        this.protobufEncodeHandler = protobufEncodeHandler;
-        this.protobufDecodeHandler = protobufDecodeHandler;
-    }
+    @Resource
+    private WebSocketOutHandler webSocketOutHandler;
+
+    @Resource
+    private WebSocketContentHandler webSocketContentHandler;
+
+    @Resource
+    private ProtobufEncodeHandler protobufEncodeHandler;
+
+    @Resource
+    private ProtobufDecodeHandler protobufDecodeHandler;
 
     @Bean
     public ServerBootstrap serverBootstrap(Map<String, IServer> serverList) {
@@ -59,10 +60,11 @@ public class AutoConfigurationClass {
         return new WebSocketServer(
                 autoConfigurationProperties.getHost(),
                 autoConfigurationProperties.getServer().getWebsocket().getPort(),
-                webSocketInHandler,
+                tcpInHandler,
+                webSocketContentHandler,
                 webSocketOutHandler,
-                protobufEncodeHandler
-        );
+                protobufEncodeHandler,
+                protobufDecodeHandler);
     }
 
 

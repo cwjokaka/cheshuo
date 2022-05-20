@@ -12,10 +12,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import org.lx.framework.autoconfigure.AutoConfigurationProperties;
-import org.lx.framework.netty.handler.ProtobufEncodeHandler;
-import org.lx.framework.netty.handler.WebSocketInHandler;
-import org.lx.framework.netty.handler.WebSocketOutHandler;
+import org.lx.framework.netty.handler.*;
 import org.lx.framework.netty.server.IServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +27,26 @@ public class WebSocketServer implements IServer {
     private String host;
     private int port;
 
-    private final WebSocketInHandler webSocketInHandler;
+    private final TcpInHandler tcpInHandler;
+    private final WebSocketContentHandler webSocketContentHandler;
     private final WebSocketOutHandler webSocketOutHandler;
     private final ProtobufEncodeHandler protobufEncodeHandler;
+    private final ProtobufDecodeHandler protobufDecodeHandler;
 
 
-    public WebSocketServer(String host, int port, WebSocketInHandler webSocketInHandler, WebSocketOutHandler webSocketOutHandler, ProtobufEncodeHandler protobufEncodeHandler) {
-        this.webSocketInHandler = webSocketInHandler;
+    public WebSocketServer(String host, int port,
+                           TcpInHandler tcpInHandler,
+                           WebSocketContentHandler webSocketContentHandler,
+                           WebSocketOutHandler webSocketOutHandler,
+                           ProtobufEncodeHandler protobufEncodeHandler,
+                           ProtobufDecodeHandler protobufDecodeHandler) {
+        this.tcpInHandler = tcpInHandler;
+        this.webSocketContentHandler = webSocketContentHandler;
         this.webSocketOutHandler = webSocketOutHandler;
         this.protobufEncodeHandler = protobufEncodeHandler;
         this.host = host;
         this.port = port;
+        this.protobufDecodeHandler = protobufDecodeHandler;
     }
 
     @Override
@@ -63,11 +69,11 @@ public class WebSocketServer implements IServer {
                             pipeline.addLast("httpObjectAggregator", new HttpObjectAggregator(65536));
                             // WebSocket处理器(自动处理的WebsocketFrame: Ping/Pong/Close)
                             pipeline.addLast("webSocketServerProtocolHandler", new WebSocketServerProtocolHandler("/ws"));
-                            pipeline.addLast("webSocketInHandler", webSocketInHandler);
+                            pipeline.addLast("webSocketContentHandler", webSocketContentHandler);
+                            pipeline.addLast("protobufDecodeHandler", protobufDecodeHandler);
+                            pipeline.addLast(tcpInHandler);
                             pipeline.addLast("webSocketOutHandler", webSocketOutHandler);
                             pipeline.addLast("protobufEncodeHandler", protobufEncodeHandler);
-
-
                         }
                     });
             LOGGER.info("绑定host:{}, port:{}", host, port);
